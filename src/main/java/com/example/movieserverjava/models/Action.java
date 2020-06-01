@@ -18,11 +18,19 @@ public class Action {
     private String type;
     private String comment;
     private int rating;
+    private String date;
 
     public Action() {
     }
 
-    public Action(long userId, String movieId, String type, String comment, int rating, String userName, String movieName) {
+    public Action(long userId,
+                  String movieId,
+                  String type,
+                  String comment,
+                  int rating,
+                  String userName,
+                  String movieName,
+                  String date) {
         this.userId = userId;
         this.movieId = movieId;
         this.type = type;
@@ -30,6 +38,15 @@ public class Action {
         this.rating = rating;
         this.userName = userName;
         this.movieName = movieName;
+        this.date = date;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public long getId() {

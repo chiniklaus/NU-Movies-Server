@@ -31,7 +31,7 @@ public class ActionController {
      * @param mid the imdbid of the movie
      * @param uid the userid of the movie
      * @param value an array of Strings. first String is the value of the action. second String is the movie name,
-     *              third String is username
+     *              third String is username, fourth value is date
      */
     @PutMapping ("/api/action/{type}/{mid}/{uid}")
     public void recordAction(
@@ -40,10 +40,10 @@ public class ActionController {
             @PathVariable("uid") long uid,
             @RequestBody String[] value) {
         if (type.equals("rate")) {
-            Action action = new Action(uid, mid, type, "", Integer.parseInt(value[0]), value[2], value[1]);
+            Action action = new Action(uid, mid, type, "", Integer.parseInt(value[0]), value[2], value[1], "");
             actionRepository.save(action);
         } else {
-            Action action = new Action(uid, mid, type, value[0], 0, value[2], value[1]);
+            Action action = new Action(uid, mid, type, value[0], 0, value[2], value[1], value[3]);
             actionRepository.save(action);
         }
     }

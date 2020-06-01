@@ -1,7 +1,5 @@
 package com.example.movieserverjava.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 import java.util.*;
 
@@ -20,6 +18,12 @@ public class User {
     @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "favAction_id", referencedColumnName = "id")
     private FavAction favorite;
+
+    @OneToMany(mappedBy = "requester")
+    private Set<Friendship> requested;
+
+    @OneToMany(mappedBy = "receiver")
+    private Set<Friendship> received;
 
     /**
      * empty constructor
@@ -48,6 +52,18 @@ public class User {
     public void addToLikes(LikeAction la) {
         this.likeActions.add(la);
     }
+
+    /**
+     * add the given friendship to the requested set
+     * @param fs given friendship
+     */
+    public void addToRequested(Friendship fs) {this.requested.add(fs);}
+
+    /**
+     * add the given friendship to the received set
+     * @param fs given friendship
+     */
+    public void addToReceived(Friendship fs) {this.received.add(fs);}
 
     public long getId() {
         return id;
@@ -95,5 +111,21 @@ public class User {
 
     public void setFavorite(FavAction favorite) {
         this.favorite = favorite;
+    }
+
+    public Set<Friendship> getRequested() {
+        return requested;
+    }
+
+    public void setRequested(Set<Friendship> requested) {
+        this.requested = requested;
+    }
+
+    public Set<Friendship> getReceived() {
+        return received;
+    }
+
+    public void setReceived(Set<Friendship> received) {
+        this.received = received;
     }
 }
