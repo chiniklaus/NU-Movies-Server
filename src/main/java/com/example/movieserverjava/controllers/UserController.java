@@ -54,6 +54,11 @@ public class UserController {
         return new User(-1,"wrong","passwordNotMatch", "admin");
     }
 
+    /**
+     * return the current login user
+     * @param session cookie
+     * @return the current user
+     */
     @GetMapping("/currentUser")
     public User getCurrentUser(HttpSession session) {
         User u = (User)session.getAttribute("currentUser");
@@ -61,8 +66,35 @@ public class UserController {
         return repository.findUserByUsername(u.getUsername());
     }
 
+    /**
+     * logout by clearing cookie
+     * @param session cookie
+     */
     @PostMapping("/logout")
     public void logout(HttpSession session) {
         session.invalidate();
+    }
+
+    @GetMapping("/getUser/{username}")
+    public User getUser(@PathVariable("username") String username) {
+        User u = repository.findUserByUsername(username);
+        if (u == null) {
+            return new User(-1, "dontexist", "wrong", "admin");
+        }
+        return u;
+    }
+
+    @PutMapping("/api/accounts/update/username")
+    public void updateUsername(@RequestBody String[] info) {
+        User user = repository.findUserByUsername(info[1]);
+        user.setUsername(info[0]);
+        repository.save(user);
+    }
+
+    @PutMapping("/api/accounts/update/password")
+    public void updatePassword(@RequestBody String[] info) {
+        User user = repository.findUserByUsername(info[1]);
+        user.setPassword(info[0]);
+        repository.save(user);
     }
 }
