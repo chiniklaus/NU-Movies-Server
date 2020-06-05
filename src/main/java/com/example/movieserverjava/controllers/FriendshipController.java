@@ -1,6 +1,8 @@
 package com.example.movieserverjava.controllers;
 
 import com.example.movieserverjava.models.Friendship;
+import com.example.movieserverjava.models.LikeAction;
+import com.example.movieserverjava.models.Movie;
 import com.example.movieserverjava.models.User;
 import com.example.movieserverjava.repositories.FriendshipRepository;
 import com.example.movieserverjava.repositories.UserRepository;
@@ -91,5 +93,26 @@ public class FriendshipController {
         Friendship fs = friendshipRepository.findFriendshipByRequesterAndReceiver(requester, receiver);
         fs.setValid(true);
         friendshipRepository.save(fs);
+    }
+
+    /**
+     * delete a friendship
+     * @param requester the requester username
+     * @param receiver the receiver username
+     */
+    @DeleteMapping("/api/friendship/delete/{requester}/{receiver}")
+    public void cancelRequest(@PathVariable("requester") String requester,
+                          @PathVariable("receiver") String receiver) {
+        User req = userRepository.findUserByUsername(requester);
+        User rec = userRepository.findUserByUsername(receiver);
+
+        Friendship fs = req.getRequested().stream().filter(f -> f.getReceiver().getUsername().equals(receiver)).findFirst().get();
+        req.getRequested().remove(fs);
+        userRepository.save(req);
+        rec.getReceived().remove(fs);
+        userRepository.save(rec);
+        fs.setReceiver(null);
+        fs.setRequester(null);
+        friendshipRepository.delete(fs);
     }
 }

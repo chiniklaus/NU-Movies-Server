@@ -12,6 +12,9 @@ public class User {
     private String password;
     private String type;
 
+    @Lob
+    private byte[] profileImage;
+
     @OneToMany(mappedBy = "user")
     private Set<LikeAction> likeActions;
 
@@ -43,6 +46,22 @@ public class User {
         this.password = password;
         this.type = type;
         this.likeActions = new HashSet<>();
+    }
+
+    /**
+     * a constructor that takes in profileImage
+     * @param profileImage given profile image data
+     */
+    public User(byte[] profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public byte[] getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(byte[] profileImage) {
+        this.profileImage = profileImage;
     }
 
     /**

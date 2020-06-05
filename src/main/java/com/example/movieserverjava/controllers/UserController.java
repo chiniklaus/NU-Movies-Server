@@ -4,9 +4,12 @@ import com.example.movieserverjava.models.User;
 import com.example.movieserverjava.repositories.MovieRepository;
 import com.example.movieserverjava.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 
 @RestController
@@ -96,5 +99,20 @@ public class UserController {
         User user = repository.findUserByUsername(info[1]);
         user.setPassword(info[0]);
         repository.save(user);
+    }
+
+    @RequestMapping(value = "/api/accounts/image/{username}", method = RequestMethod.POST, consumes = "multipart/form-data")
+    public void uploadImage(@PathVariable("username") String username,
+                            @RequestPart MultipartFile image) throws IOException
+    {
+        User user = repository.findUserByUsername(username);
+        user.setProfileImage(image.getBytes());
+        repository.save(user);
+    }
+
+    @GetMapping("/api/accounts/image/{username}")
+    public User getImage(@PathVariable("username") String username) {
+        User user = repository.findUserByUsername(username);
+        return new User(user.getProfileImage());
     }
 }

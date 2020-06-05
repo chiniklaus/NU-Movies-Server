@@ -74,4 +74,25 @@ public class LikeActionController {
         }
         return list;
     }
+
+    /**
+     * delete an likeaction by username and imdbid
+     * @param username given username
+     * @param imdbid given imdbid
+     */
+    @DeleteMapping("/api/likeAction/delete/{username}/{imdbid}")
+    public void deleteLikeActionByUername(@PathVariable("username") String username,
+                                          @PathVariable("imdbid") String imdbid) {
+        Movie movie = movieRepository.findMovieById(imdbid);
+
+        LikeAction l = movie.getLikeActions().stream().filter(la -> la.getUsername().equals(username)).findFirst().get();
+        movie.getLikeActions().remove(l);
+        movieRepository.save(movie);
+        User user = userRepository.findUserByUsername(username);
+        user.getLikeActions().remove(l);
+        userRepository.save(user);
+        l.setUser(null);
+        l.setMovie(null);
+        likeActionRepository.delete(l);
+    }
 }

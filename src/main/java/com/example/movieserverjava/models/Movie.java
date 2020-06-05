@@ -3,6 +3,8 @@ package com.example.movieserverjava.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -37,10 +39,27 @@ public class Movie {
         this.name = name;
         this.imdbid = imdbid;
         this.poster = poster;
+        this.likeActions = new HashSet<>();
     }
 
     public void addToFavAction(FavAction ac) {
         this.favActions.add(ac);
+    }
+
+    public Collection<LikeAction> getLikeActions() {
+        return likeActions;
+    }
+
+    public void setLikeActions(Set<LikeAction> likeActions) {
+        this.likeActions = likeActions;
+    }
+
+    public Set<FavAction> getFavActions() {
+        return favActions;
+    }
+
+    public void setFavActions(Set<FavAction> favActions) {
+        this.favActions = favActions;
     }
 
     public long getId() {
