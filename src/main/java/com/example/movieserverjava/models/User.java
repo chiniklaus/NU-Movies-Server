@@ -15,6 +15,9 @@ public class User {
     @Lob
     private byte[] profileImage;
 
+    @Lob
+    private byte[] backgroundImage;
+
     @OneToMany(mappedBy = "user")
     private Set<LikeAction> likeActions;
 
@@ -62,6 +65,14 @@ public class User {
 
     public void setProfileImage(byte[] profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public byte[] getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(byte[] backgroundImage) {
+        this.backgroundImage = backgroundImage;
     }
 
     /**

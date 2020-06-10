@@ -1,5 +1,6 @@
 package com.example.movieserverjava.controllers;
 
+import com.example.movieserverjava.models.Friendship;
 import com.example.movieserverjava.models.User;
 import com.example.movieserverjava.repositories.MovieRepository;
 import com.example.movieserverjava.repositories.UserRepository;
@@ -10,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -70,6 +73,18 @@ public class UserController {
     }
 
     /**
+     * return the current login username
+     * @param session cookie
+     * @return the current user
+     */
+    @GetMapping("/currentUsername")
+    public User getCurrentUsername(HttpSession session) {
+        User u = (User)session.getAttribute("currentUser");
+        if (u == null || u.getId() == -1) return new User(-1,"wrong","nocurrent", "admin");
+        return new User(-2,u.getUsername(),"current", "admin");
+    }
+
+    /**
      * logout by clearing cookie
      * @param session cookie
      */
@@ -114,5 +129,29 @@ public class UserController {
     public User getImage(@PathVariable("username") String username) {
         User user = repository.findUserByUsername(username);
         return new User(user.getProfileImage());
+    }
+
+    @RequestMapping(value = "/api/accounts/bgImage/{username}", method = RequestMethod.POST, consumes = "multipart/form-data")
+    public void uploadBackgroundImage(@PathVariable("username") String username,
+                            @RequestPart MultipartFile image) throws IOException
+    {
+        User user = repository.findUserByUsername(username);
+        user.setBackgroundImage(image.getBytes());
+        repository.save(user);
+    }
+
+    @GetMapping("/api/accounts/friends")
+    public List<String> getUserFriends(HttpSession session) {
+        User u = (User)session.getAttribute("currentUser");
+        List<String> result = new ArrayList<>();
+        if (u == null || u.getId() == -1) return result;
+        for (Friendship f : u.getRequested()) {
+            if (f.isValid()) result.add(f.getReceiverName());
+        }
+
+        for (Friendship f : u.getReceived()) {
+            if (f.isValid()) result.add(f.getRequesterName());
+        }
+        return result;
     }
 }
